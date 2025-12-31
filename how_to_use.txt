@@ -1,0 +1,48 @@
+This program can implement a command-line interface similar to Linux, which can complete TAB commands, uncheck cells, view history commands with arrow keys, and move the cursor. In short, it has basic functions and can meet basic usage needs. Of course, certain modifications need to be made during porting, such as serial port drivers and reception processes, depending on the situation. This code is derived from an embedded project I previously participated in at school before., as the board of the project is not equipped with an operating system similar to Linux. In some cases, debugging using JTAG or ST-Link can be very cumbersome, especially when your embedded board needs to fine tune parameters outdoors and view real-time running status or print logs. Therefore, this set of code was written for serial port debugging.
+
+How to use?
+After you add the code to your project, open your serial port and enter "ls", and you can see the following
+"
+[leon]@leon:ls
+-------------------- cmd table --------------------
+cmd:add    eg:add [parm1] [parm2]
+cmd:sub    eg:sub [parm1] [parm2]
+cmd:mul    eg:mul [parm1] [parm2]
+cmd:div    eg:div [parm1] [parm2]
+---------------------------------------------------
+"
+These four examples are respectively simple addition, subtraction, multiplication and division. For instance, when you input
+"
+[leon]@leon:add 3 7
+"
+The result will be obtained.
+"
+add = 10
+"
+If you have a new command, just write a command function. You can follow the example
+"
+void caclu_add(void){
+	int parm1=0,parm2=0;
+	// Determination of parameter validity
+	if(strlen(token[1])==0){
+		printf("cmd parm invalid! \r\n");
+		return;
+	}
+	if(strlen(token[2])==0){
+		printf("cmd parm invalid! \r\n");
+		return;
+	}
+
+	parm1 = atoi(token[1]);
+	parm2 = atoi(token[2]);
+	printf("add = %d \r\n",parm1+parm2);
+}
+"
+Then place the command function
+"
+_cmd_table cmd_table[]={
+...
+};
+"
+to register this command.
+Of course, you must include the header file of the source file where the command is located.
